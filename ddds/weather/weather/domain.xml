@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <domain name="WeatherDomain" is_super_domain="true">
 
+<!-- Prompt user to ask either weather or temp-->
   <goal type="perform" action="top">
     <plan>
       <forget_all/>
-      <findout type="goal"/>
+      <findout type="alt_question">
+          <alt>
+              <resolve type="wh_question" predicate="temperature"/>
+          </alt>
+          <alt>
+              <resolve type="wh_question" predicate="weather"/>
+          </alt>
+      </findout>
     </plan>
   </goal>
 

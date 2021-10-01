@@ -52,7 +52,7 @@
 
 
   <question speaker="all" predicate="temperature" type="wh_question">the temperature</question>
-  <question speaker="all" predicate="weather" type="wh_question">the weather</question>
+  <question speaker="all" predicate="weather" type="wh_question">the current weather</question>
 
 <!-- SYSTEM ASKS FOR DETAILS -->
   <question speaker="system" predicate="city_to_search" type="wh_question"> which city </question>
