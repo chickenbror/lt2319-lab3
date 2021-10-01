@@ -1,3 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <service_interface>
+
+<!-- When user asks a question about wearher => ask(city, country) and call get_weather() -->
+    <query name="weather">
+        <parameters>
+            <parameter predicate="city_to_search" format="grammar_entry"/>
+            <parameter predicate="country_to_search" format="grammar_entry"/>
+        </parameters>
+        <target>
+            <http endpoint="http://http-service/get_weather"/>
+        </target>
+    </query>
+
+<!-- When user asks a question about wearher/temp => ask(city, country, *unit) and call get_temp() -->
+    <query name="temperature">
+        <parameters>
+            <parameter predicate="city_to_search" format="grammar_entry"/>
+            <parameter predicate="country_to_search" format="grammar_entry"/>
+            <parameter predicate="unit_to_search" format="grammar_entry" optional="true"/>
+        </parameters>
+        <target>
+            <http endpoint="http://http-service/get_temperature"/>
+        </target>
+    </query>
+
 </service_interface>

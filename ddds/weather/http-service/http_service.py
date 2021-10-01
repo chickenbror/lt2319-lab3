@@ -1,27 +1,10 @@
 # -*- coding: utf-8 -*-
-
 import json
-from os import getenv
 
 from flask import Flask, request
 from jinja2 import Environment
-import structlog
+from urllib.request import Request, urlopen
 
-from logger import configure_stdout_logging
-
-
-def setup_logger():
-    logger = structlog.get_logger(__name__)
-    try:
-        log_level = getenv("LOG_LEVEL", default="INFO")
-        configure_stdout_logging(log_level)
-        return logger
-    except BaseException:
-        logger.exception("exception during logger setup")
-        raise
-
-
-logger = setup_logger()
 app = Flask(__name__)
 environment = Environment()
 
@@ -31,7 +14,6 @@ def jsonfilter(value):
 
 
 environment.filters["json"] = jsonfilter
-
 
 def error_response(message):
     response_template = environment.from_string("""
@@ -49,9 +31,7 @@ def error_response(message):
         status=200,
         mimetype='application/json'
     )
-    logger.info("Sending error response to TDM", response=response)
     return response
-
 
 def query_response(value, grammar_entry):
     response_template = environment.from_string("""
@@ -75,9 +55,7 @@ def query_response(value, grammar_entry):
         status=200,
         mimetype='application/json'
     )
-    logger.info("Sending query response to TDM", response=response)
     return response
-
 
 def multiple_query_response(results):
     response_template = environment.from_string("""
@@ -103,9 +81,7 @@ def multiple_query_response(results):
         status=200,
         mimetype='application/json'
     )
-    logger.info("Sending multiple query response to TDM", response=response)
     return response
-
 
 def validator_response(is_valid):
     response_template = environment.from_string("""
@@ -123,9 +99,7 @@ def validator_response(is_valid):
         status=200,
         mimetype='application/json'
     )
-    logger.info("Sending validator response to TDM", response=response)
     return response
-
 
 @app.route("/dummy_query_response", methods=['POST'])
 def dummy_query_response():
@@ -150,9 +124,7 @@ def dummy_query_response():
         status=200,
         mimetype='application/json'
     )
-    logger.info("Sending dummy query response to TDM", response=response)
     return response
-
 
 @app.route("/action_success_response", methods=['POST'])
 def action_success_response():
@@ -170,5 +142,68 @@ def action_success_response():
         status=200,
         mimetype='application/json'
     )
-    logger.info("Sending successful action response to TDM", response=response)
     return response
+
+# GET WEATHER FROM API
+def get_weather_data(city,country, unit="metric"):
+    '''
+    Args:
+        city, country:str
+        unit (optional): 'metric'|'standard'|'imperial' => returns temperature in C|K|F
+    Returns: 
+        a JSON dict
+    '''
+    # Replace spaces with '+'
+    spaces_to_plus = lambda name : ''.join([c if c.isalnum() else '+' for c in name])
+    city, country = spaces_to_plus(city), spaces_to_plus(country)
+
+    api_key = '439da00c4e597bf7c30a0cc885fad5e4'
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city},{country}&units={unit}&APPID={api_key}"
+
+    try:
+      request = Request(url)
+      response = urlopen(request)
+      data = response.read()
+      return json.loads(data)
+    except Exception:
+      return 'city not found'
+
+@app.route("/get_temperature", methods=['POST'])
+def get_temperature():
+    payload = request.get_json()
+    city = payload["context"]["facts"]["city_to_search"]["grammar_entry"]
+    country = payload["context"]["facts"]["country_to_search"]["grammar_entry"]
+    city, country = str(city), str(country)
+
+    # Optional unit parameter
+    if 'unit_to_search' in payload["context"]["facts"]:  
+      unit = payload["context"]["facts"]["unit_to_search"]["grammar_entry"] 
+      unit = str(unit) # 'metric'|'standard'|'imperial'
+    else:
+      unit = 'metric'
+
+    weather_data = get_weather_data(city, country, unit=unit)
+    if type(weather_data)==str:
+      out = weather_data
+    else:
+      temp_now = weather_data['main']['temp']
+      degrees_unit = {'metric':'°C', 'imperial':'°F', 'standard':'°K'}[unit]
+      out = str(round(temp_now, 1)) + degrees_unit
+
+    return query_response(value=out, grammar_entry=None)
+
+@app.route("/get_weather", methods=['POST'])
+def get_weather():
+    payload = request.get_json()
+    
+    city = payload["context"]["facts"]["city_to_search"]["grammar_entry"]
+    country = payload["context"]["facts"]["country_to_search"]["grammar_entry"]
+    city, country = str(city), str(country)
+
+    weather_data = get_weather_data(city, country)
+    if type(weather_data)==str:
+      out = weather_data
+    else:
+      out = weather_data['weather'][0]['description']
+
+    return query_response(value=out, grammar_entry=None)

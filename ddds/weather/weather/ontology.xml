@@ -1,3 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ontology name="WeatherOntology">
+
+    <sort name="city" dynamic="true"/>
+    <sort name="country" dynamic="true"/>
+    <sort name="unit"/>
+
+<!-- Perameters: city/country; Queries: weather/temp -->
+    <predicate name="city_to_search" sort="city"/>
+    <predicate name="country_to_search" sort="country"/>
+    <predicate name="temperature" sort="string"/>
+    <predicate name="weather" sort="string"/>
+    <predicate name="unit_to_search" sort="unit"/>
+
+
+<!-- Example of cities/countries -->
+    <individual name="city_gothenburg" sort="city"/>
+    <individual name="city_melbourne" sort="city"/>
+    <individual name="city_tainan" sort="city"/>
+    <individual name="city_saigon" sort="city"/>
+    <individual name="city_los_angeles" sort="city"/>
+    <individual name="city_johannesburg" sort="city"/>
+
+    <individual name="country_se" sort="country"/>
+    <individual name="country_au" sort="country"/>
+    <individual name="country_tw" sort="country"/>
+    <individual name="country_vn" sort="country"/>
+    <individual name="country_us" sort="country"/>
+    <individual name="country_za" sort="country"/>
+
+<!-- C,F,K -->
+    <individual name="unit_c" sort="unit"/>
+    <individual name="unit_f" sort="unit"/>
+    <individual name="unit_k" sort="unit"/>
+
 </ontology>

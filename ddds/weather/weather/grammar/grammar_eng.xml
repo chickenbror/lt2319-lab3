@@ -1,24 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grammar>
 
+<!-- buildin action top/up/how -->
   <action name="top">
     <one-of>
-      <item>main menu</item>
-      <item>top</item>
-      <item>beginning</item>
-      <item>cancel</item>
-      <item>forget it</item>
-      <item>never mind</item>
-      <item>abort</item>
+      <item>main menu</item> <item>top</item> <item>beginning</item> <item>cancel</item> 
+      <item>forget it</item> <item>never mind</item> <item>abort</item>
     </one-of>
   </action>
 
   <action name="up">
     <one-of>
-      <item>up</item>
-      <item>back</item>
-      <item>go back</item>
+      <item>up</item> <item>back</item> <item>go back</item>
     </one-of>
   </action>
 
+  <action name="how">
+    <one-of>
+      <item>how</item> <item>in what way</item> <item>which way</item>
+    </one-of>
+  </action>
+
+<!-- To query weather: 0~2 parameters -->
+  <question type="wh_question" speaker="user" predicate="weather">
+    <one-of>
+      <item>how is the weather</item> <item>what is the weather like</item>
+
+      <item>how is the weather in <slot predicate="city_to_search"/></item>
+      <item>how is the weather in <slot predicate="country_to_search"/></item>
+      <item>what is the weather like in <slot predicate="city_to_search"/></item>
+      <item>what is the weather like in <slot predicate="country_to_search"/></item>
+
+      <item>how is the weather in <slot predicate="city_to_search"/> <slot predicate="country_to_search"/></item>
+      <item>what is the weather like in <slot predicate="city_to_search"/> <slot predicate="country_to_search"/></item>
+    </one-of>
+  </question>
+
+<!-- To query temp: 0~2 + 1 optional parameters -->
+  <question type="wh_question" speaker="user" predicate="temperature">
+    <one-of>
+      <item>what is the temperature</item>
+
+      <item>what is the temperaturer in <slot predicate="city_to_search"/></item>
+      <item>what is the temperature in <slot predicate="country_to_search"/></item>
+
+      <item>what is the temperature in <slot predicate="city_to_search"/> <slot predicate="country_to_search"/></item>
+
+      <item>what is the temperature in <slot predicate="city_to_search"/> <slot predicate="country_to_search"/> in <slot predicate="unit_to_search"/></item>
+    </one-of>
+  </question>
+
+
+  <question speaker="all" predicate="temperature" type="wh_question">the temperature</question>
+  <question speaker="all" predicate="weather" type="wh_question">the weather</question>
+
+<!-- SYSTEM ASKS FOR DETAILS -->
+  <question speaker="system" predicate="city_to_search" type="wh_question"> which city </question>
+  <question speaker="system" predicate="country_to_search" type="wh_question"> which country </question>
+  <question type="wh_question" predicate="unit_to_search" speaker="system">in which unit of temperature</question>
+
+<!-- System answers to query of number *NOTE must have str or GF will have compile error? -->
+  <answer speaker="system" predicate="temperature">
+    The temperature is <slot predicate="temperature"/>
+  </answer>
+  <answer speaker="system" predicate="weather">
+    The weather is <slot predicate="weather"/>
+  </answer>
+
+
+<!-- Idvs: city/country/unit -->
+  <individual name="city_gothenburg">
+    <one-of>  <item>gothenburg</item> <item>göteborg</item> <item>Göteborg</item> <item>Gothenburg</item> </one-of>
+  </individual>
+  <individual name="city_melbourne">
+    <one-of>  <item>melbourne</item> <item>Melbourne</item> </one-of>
+  </individual>
+  <individual name="city_tainan">
+    <one-of>  <item>tainan</item> <item>Tainan</item> </one-of>
+  </individual>
+  <individual name="city_saigon">
+    <one-of>  <item>saigon</item> <item>Saigon</item> <item>ho chi minh city</item> <item>Ho Chi Minh City</item> </one-of>
+  </individual>
+  <individual name="city_los_angeles">
+    <one-of>  <item>los angeles</item>  <item>LA</item> <item>L.A.</item> <item>Los Angeles</item> </one-of>
+  </individual>
+  <individual name="city_johannesburg">
+    <one-of>  <item>johannesburg</item>  <item>joburg</item> <item>Joburg</item> <item>johannesburg</item></one-of>
+  </individual>
+
+
+<!-- grammar_entry = the last item -->
+  <individual name="country_se">
+    <one-of>  <item>Sweden</item> <item>sweden</item> <item>se</item> </one-of>
+  </individual>
+  <individual name="country_au">
+    <one-of>  <item>Austria</item> <item>australia</item> <item>au</item> </one-of>
+  </individual>
+  <individual name="country_tw">
+    <one-of>  <item>Taiwan</item> <item>taiwan</item> <item>tw</item> </one-of>
+  </individual>
+  <individual name="country_vn">
+    <one-of>  <item>Vietnam</item> <item>vietnan</item> <item>Viet Nam</item> <item>viet nam</item> <item>vn</item></one-of>
+  </individual>
+  <individual name="country_us">
+    <one-of>  <item>US</item> <item>the us</item> <item>the states</item> <item>the united states</item> 
+    <item>the united states of america</item> <item>america</item> <item>us</item> </one-of>
+  </individual>
+  <individual name="country_za">
+    <one-of>  <item>South Africa</item> <item>south africa</item> <item>za</item> </one-of>
+  </individual>
+
+
+  <individual name="unit_c">
+    <one-of> <item>Celsius</item> <item>celsius</item>  <item>metric</item></one-of>
+  </individual>
+  <individual name="unit_f">
+    <one-of>  <item>Fahrenheit</item> <item>fahrenheit</item> <item>imperial</item> </one-of>
+  </individual>
+  <individual name="unit_k">
+    <one-of>  <item>Kelvin</item> <item>kelvin</item> <item>standard</item> </one-of>
+  </individual>
 </grammar>
