@@ -1,2 +1,86 @@
 --- main menu
-S> What would you like to do?
+S> Do you want to know the temperature or know the current weather?
+
+--- query weather (incremental)
+S> Do you want to know the temperature or know the current weather?
+U> How is the weather?
+S> Which city?
+U> Seoul
+S> Which country?
+U> South Korea
+S> The weather is overcast clouds.
+
+--- query weather (one-shot)
+S> Do you want to know the temperature or know the current weather?
+U> How is the weather in Seoul South Korea?
+S> The weather is overcast clouds.
+
+--- query weather (over answering)
+S> Do you want to know the temperature or know the current weather?
+U> How is the weather in South Korea?
+S> Which city?
+U> Seoul
+S> The weather is overcast clouds.
+
+--- query temperature (incremental)
+S> Do you want to know the temperature or know the current weather?
+U> What is the temperature?
+S> Which city?
+U> Queenstown
+S> Which country?
+U> South Korea
+S> The temperature is 23.0°C.
+
+--- query temperature (one-shot)
+S> Do you want to know the temperature or know the current weather?
+U> What is the temperature in Seoul South Korea?
+S> The temperature is 23.0°C.
+
+--- query temperature (over-answering)
+S> Do you want to know the temperature or know the current weather?
+U> What is the temperature in South Korea?
+S> Which city?
+U> Seoul
+S> The temperature is 23.0°C.
+
+--- query temperature (optional parameter)
+S> Do you want to know the temperature or know the current weather?
+U> What is the temperature in Seoul South Korea in Fahrenheit?
+S> The temperature is 73.3°F.
+
+--- query with extra words (please, thanks etc)
+S> Do you want to know the temperature or know the current weather?
+U> Sorry what is the weather like in Seoul South Korea please?
+S> The weather is overcast clouds.
+
+--- query with misspelled parameters
+S> Do you want to know the temperature or know the current weather?
+U> What is the temperature in Soul South Koria?
+S> The temperature is 23.0°C.
+
+--- topic switch
+S> Do you want to know the temperature or know the current weather?
+U> How is the weather in Seoul?
+S> Which country?
+U> What is the temperature in Seoul South Korea?
+S> The temperature is 23.0°C.
+
+--- context recall
+S> Do you want to know the temperature or know the current weather?
+U> How is the weather in Seoul?
+S> Which country?
+U> What is the temperature in Soul South Korea?
+S> The temperature is 23.0°C.
+U>
+S> Returning to the current weather. Which country?
+U> South Korea
+S> The weather is overcast clouds.
+
+--- topic recognition
+S> Do you want to know the temperature or know the current weather?
+U> Seoul
+S> So, Do you want to know the temperature or know the current weather?
+U> The weather
+S> Which country?
+U> South Korea
+S> The weather is overcast clouds.
